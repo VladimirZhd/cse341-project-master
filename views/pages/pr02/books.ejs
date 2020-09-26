@@ -46,6 +46,9 @@
         <label for="year">Year</label>
         <input type="text" id="year" name="year" class="form-control" />
         <button class="btn btn-primary my-2">Submit</button>
+        <% if (empty) {%>
+        <div class="alert alert-warning">All fields are required</div>
+        <% } %>
       </form>
     </div>
     <div class="container my-2">

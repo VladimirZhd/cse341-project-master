@@ -12,19 +12,28 @@ const books = [
   },
 ];
 
+let emptyFields = false;
 router.get('/', (req, res) => {
   res.render('pages/pr02/books', {
     title: 'Prove assignment 2',
     path: '/pr02',
     books: books,
+    empty: emptyFields,
   });
 });
 
 router.post('/addBook', (req, res) => {
-  if (!req.body) {
-    return;
+  console.log(req.body.length);
+  if (
+    !req.body.bookTitle ||
+    !req.body.summary ||
+    !req.body.author ||
+    !req.body.year
+  ) {
+    emptyFields = true;
+    return res.redirect('/pr02');
   }
-
+  emptyFields = false;
   books.push(req.body);
   res.redirect('/pr02');
 });
