@@ -23,7 +23,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/addBook', (req, res) => {
-  console.log(req.body.length);
   if (
     !req.body.bookTitle ||
     !req.body.summary ||
