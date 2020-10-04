@@ -4,7 +4,7 @@ routes
   .use('/admin', require('./routes/admin'))
   .use('/shop', require('./routes/shop'))
   .get('/', (req, res) => {
-    res.render('/pages/store', {
+    res.render('/pages/store/shop', {
       title: 'Your Store',
       path: '/shop',
     });
