@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+   <div class="navbar ml-4">
+     <a class="navbar-brand" href="/">
+      <img src="/images/BYUI-logo.png" alt="Logo" style="width:40px;">
+    </a>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="/ <%= path === '/prove' ? 'active' : '' %> nav-link" href="/prove">Home</a>
+      </li>
+      <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+        Prove Activities
+      </a>
+      <div class="dropdown-menu">
+        <a class="<%= path === '/pr01' ? 'active' : '' %>   dropdown-item" href="/prove/pr01">Prove 1</a>
+        <a class="<%= path === '/pr02' ? 'active' : '' %> dropdown-item" href="/prove/pr02">Prove 2</a>
+        <a class="<%= path === '/pr03' ? 'active' : '' %> dropdown-item" href="/prove/pr03">Prove 3</a>
+      </div>
+      </li>
+    </ul>
+   </div>
+</nav>
