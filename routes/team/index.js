@@ -6,7 +6,7 @@ routes
   .use('/ta03', require('./routes/ta03'))
   .use('/ta04', require('./routes/ta04'))
   .get('/', (req, res) => {
-    res.render('pages/team', {
+    res.render('pages', {
       title: 'Team Activities',
       path: '/team',
     });
