@@ -6,7 +6,7 @@ routes
   .get('/', (req, res) => {
     res.render('/pages/store/shop', {
       title: 'Your Store',
-      path: '/shop',
+      path: '/store/shop',
     });
   });
 
