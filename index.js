@@ -7,8 +7,18 @@ const PORT = process.env.PORT || 5000; // So we can run on heroku || (OR) localh
 
 const mongoose = require('mongoose');
 const config = require('config');
+const cors = require('cors');
+
+const corsOptions = {
+  origin: 'https://cse341vovazhdanov.herokuapp.com/',
+  optionSuccessStatus: 200,
+};
+
+const MONGODB_URL = process.env.MONGODB_URL || config.get('mongoURI');
 
 const app = express();
+
+app.use(cors(corsOptions));
 
 // Route setup. You can implement more in the future!
 const routes = require('./routes');
@@ -18,31 +28,37 @@ app
   .set('view engine', 'ejs')
   .use(bodyParser.urlencoded({ extended: false }))
   .use(bodyParser.json()) // For parsing the body of a POST
-  .use((req, res, next) => {
-    User.findById('5f7e1caa554ea5154d7d2b3a')
-      .then(user => {
-        req.user = user;
-        next();
-      })
-      .catch(err => console.log(err));
-    next();
+  .use(async (req, res, next) => {
+    try {
+      const user = await User.findOne({ _id: '5f7e272a6ca8b644e0761be5' });
+      req.user = user;
+      next();
+    } catch (error) {
+      console.log(error);
+      next();
+    }
   })
   .use('/', routes);
 
-mongoose.connect(config.get('mongoURI'), { useNewUrlParser: true, useUnifiedTopology: true }).then(result => {
-  User.findOne().then(user => {
-    if (!user) {
-      const user = new User({
-        name: 'Vova',
-        email: 'vova@test.com',
-        cart: {
-          items: []
+mongoose
+  .connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(result => {
+    User.findOne()
+      .then(user => {
+        if (!user) {
+          const user = new User({
+            name: 'Vova',
+            email: 'vova@test.com',
+            cart: {
+              items: [],
+            },
+          });
+          user.save();
         }
       })
-      user.save();
-    }
-  }).catch(err => console.log(err));
-  app.listen(PORT, () => console.log(`Listening on ${PORT}`));
-}).catch(err => {
-  console.log(err);
-})
+      .catch(err => console.log(err));
+    app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+  })
+  .catch(err => {
+    console.log(err);
+  });

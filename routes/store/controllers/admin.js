@@ -4,7 +4,7 @@ exports.getAddProduct = (req, res, next) => {
   res.render('pages/store/admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/store/admin/add-product',
-    editing: false
+    editing: false,
   });
 };
 
@@ -18,7 +18,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
-    userId: req.user
+    userId: req.user,
   });
   product
     .save()
@@ -47,7 +47,7 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: 'Edit Product',
         path: '/store/admin/edit-product',
         editing: editMode,
-        product: product
+        product: product,
       });
     })
     .catch(err => console.log(err));
@@ -84,7 +84,7 @@ exports.getProducts = (req, res, next) => {
       res.render('pages/store/admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
-        path: '/store/admin/products'
+        path: '/store/admin/products',
       });
     })
     .catch(err => console.log(err));
