@@ -41,7 +41,7 @@ app
   .use('/', routes);
 
 mongoose
-  .connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .then(result => {
     User.findOne()
       .then(user => {

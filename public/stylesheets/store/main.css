@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 
 * {
   box-sizing: border-box;
@@ -7,7 +7,7 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 main {
@@ -155,6 +155,8 @@ form {
 
 .card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  display: flex;
+  flex-direction: column;
 }
 
 .card__header,
@@ -180,11 +182,13 @@ form {
 .card__actions {
   padding: 1rem;
   text-align: center;
+  margin-top: auto;
 }
 
 .card__actions button,
 .card__actions a {
   margin: 0 0.25rem;
+  margin-top: auto;
 }
 
 .btn {

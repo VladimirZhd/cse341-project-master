@@ -2,8 +2,14 @@
   <div class="container">
     <ul class="nav navbar-nav">
       <li><a href="/" style="padding: 0 2rem; margin: 0"><img class="logo" src="/images/BYUI-logo.png" alt="BYU Idaho logo"></a></li>
-      <li class="<%= path === '/' ? 'active' : ''%>">
-        <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
+      <li class="<%= path === '/' ? 'active' : ''%> nav-item">
+        <a href="/"><span class="nav-link"></span> Home</a>
+      </li>
+            <li class="<%= path === '/store' ? 'active' : ''%> nav-item">
+        <a href="/prove"><span class="nav-link"></span> Prove Activities</a>
+      </li>
+            <li class="<%= path === '/prove' ? 'active' : ''%> nav-item">
+        <a href="/store"><span class="nav-link"></span> Store Project</a>
       </li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> Team Activities <span class="caret"></span></a>

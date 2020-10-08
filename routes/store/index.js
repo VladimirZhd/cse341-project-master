@@ -5,7 +5,6 @@ routes
   .use('/shop', require('./routes/shop'))
   .get('/', (req, res, next) => {
     res.redirect('/store/shop');
-    next();
   });
 
 module.exports = routes;
