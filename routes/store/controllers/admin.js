@@ -1,4 +1,6 @@
 const Product = require('../models/product');
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 exports.getAddProduct = (req, res, next) => {
   res.render('pages/store/admin/edit-product', {
@@ -80,7 +82,6 @@ exports.getProducts = (req, res, next) => {
     // .select('title price -_id')
     // .populate('userId', 'name')
     .then(products => {
-      console.log(products);
       res.render('pages/store/admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
@@ -98,4 +99,25 @@ exports.postDeleteProduct = (req, res, next) => {
       res.redirect('/store/admin/products');
     })
     .catch(err => console.log(err));
+};
+
+exports.getAddUser = (req, res, next) => {
+  res.render('pages/store/admin/add-user', {
+    pageTitle: 'Add User',
+    path: '/store/admin/add-user',
+    editing: false,
+  });
+};
+
+exports.postAddUser = async (req, res, next) => {
+  try {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    console.log(hash);
+    const user = new User({ ...req.body, password: hash });
+    await user.save();
+    console.log('User created');
+    res.redirect('/store/shop');
+  } catch (error) {
+    console.log(error);
+  }
 };

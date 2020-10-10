@@ -30,7 +30,7 @@ app
   .use(bodyParser.json()) // For parsing the body of a POST
   .use(async (req, res, next) => {
     try {
-      const user = await User.findOne({ _id: '5f7e272a6ca8b644e0761be5' });
+      const user = await User.findOne({ _id: '5f82439667d9402b78a7d4f7' });
       req.user = user;
       next();
     } catch (error) {
