@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../../includes/header.ejs %>
+</head>
+
+<body>
+  <% include ../../includes/nav.ejs %>
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1><%= title %></h1>
+    <form action="/ta05/change-style" method="POST">
+      <button type="submit">Change style</button>
+    </form>
+  </div>
+</div>
+<div class="container">
+</div>
+
+
+</body>
+</html>

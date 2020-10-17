@@ -3,6 +3,7 @@ const routes = require('express').Router();
 routes
   .use('/admin', require('./routes/admin'))
   .use('/shop', require('./routes/shop'))
+  .use('/auth', require('./routes/auth'))
   .get('/', (req, res, next) => {
     res.redirect('/store/shop');
   });

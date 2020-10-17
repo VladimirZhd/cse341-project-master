@@ -24,6 +24,7 @@ const userSchema = new Schema({
       },
     ],
   },
+  level: { type: Number },
 });
 
 userSchema.methods.addToCart = function (product) {
