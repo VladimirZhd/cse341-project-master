@@ -1,3 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://iClient:xGQq6XX7c7slV3pY@devconnector-jf35u.mongodb.net/shop?retryWrites=true&w=majority"
+  "mongoURI": "mongodb+srv://iClient:xGQq6XX7c7slV3pY@devconnector-jf35u.mongodb.net/shop?retryWrites=true&w=majority",
+  "sendGridAPI": "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"
 }
