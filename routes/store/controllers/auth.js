@@ -2,9 +2,10 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const nodeMailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
-const config = require('config');
+const crypto = require('crypto');
 
-const SEND_GRID_API = process.env.SEND_GRID_API;
+// const SEND_GRID_API = process.env.SEND_GRID_API;
+const SEND_GRID_API = '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';
 
 const transporter = nodeMailer.createTransport(
   sendgridTransport({
@@ -24,7 +25,6 @@ exports.getLogin = (req, res) => {
   res.render('pages/store/auth/login', {
     path: '/store/auth/login',
     pageTitle: 'Login',
-    isAuthenticated: false,
     error: message,
   });
 };
@@ -72,7 +72,6 @@ exports.getSignup = async (req, res) => {
   res.render('pages/store/auth/signup', {
     path: '/store/auth/signup',
     pageTitle: 'Signup',
-    isAuthenticated: false,
     error: message,
   });
 };
@@ -104,11 +103,84 @@ exports.postSignup = async (req, res) => {
 
     transporter.sendMail({
       to: email,
-      from: 'zhd18001@byui.edu',
+      from: 'vladimirzhd.v@gmail.com',
       subject: 'Welcome to the Shop',
       html: '<h1>Welcome, you successfully regestered an account!</h1>',
     });
   } catch (error) {
     console.log(error);
+  }
+};
+
+exports.getReset = (req, res) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render('pages/store/auth/reset', {
+    path: '/store/auth/reset',
+    pageTitle: 'Login',
+    error: message,
+  });
+};
+
+exports.postReset = async (req, res) => {
+  try {
+    const buffer = await crypto.randomBytes(32);
+    if (!buffer) {
+      return req.redirect('/store/auth/reset');
+    }
+
+    const token = buffer.toString('hex');
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      req.flash('error', 'No account with that email found.');
+      return res.redirect('/store/auth/reset');
+    }
+
+    user.resetToken = token;
+    user.resetTokenExpiration = Date.now() + 3600000;
+    await user.save();
+    res.redirect('/store');
+    transporter.sendMail({
+      to: req.body.email,
+      from: 'vladimirzhd.v@gmail.com',
+      subject: 'Password Reset',
+      html: `
+        <p>You requested a password reset</p>
+        <p>Click this <a href='${req.protocol}://${req.headers.host}/store/auth/reset/${token}'>link</a> to set a new password.</p>
+      `,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getNewPassword = async (req, res) => {
+  try {
+    const token = req.params.token;
+
+    const user = await User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+
+    if (!user) {
+      return res.redirect('/store');
+    }
+
+    let message = req.flash('error');
+    if (message.length > 0) {
+      message = message[0];
+    } else {
+      message = null;
+    }
+    res.render('pages/store/auth/new-password', {
+      path: '/store/auth/new-password',
+      pageTitle: 'New Password',
+      error: message,
+      userId: user._id.toString(),
+    });
+  } catch (error) {
+    console.error(error);
   }
 };
