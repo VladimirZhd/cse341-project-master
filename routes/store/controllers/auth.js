@@ -4,8 +4,8 @@ const nodeMailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
 
-// const SEND_GRID_API = process.env.SEND_GRID_API;
-const SEND_GRID_API = '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';
+const SEND_GRID_API = process.env.SEND_GRID_API;
+
 
 const transporter = nodeMailer.createTransport(
   sendgridTransport({
