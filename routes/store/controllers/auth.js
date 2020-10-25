@@ -148,7 +148,7 @@ exports.postReset = async (req, res) => {
       from: 'vladimirzhd.v@gmail.com',
       subject: 'Password Reset',
       html: `
-        <p>You requested a password reset</p>
+        <p>You requested a password reset!</p>
         <p>Click this <a href='${req.protocol}://${req.headers.host}/store/auth/reset/${token}'>link</a> to set a new password.</p>
       `,
     });
