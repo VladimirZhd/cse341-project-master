@@ -6,7 +6,6 @@ const crypto = require('crypto');
 
 const SEND_GRID_API = process.env.SEND_GRID_API;
 
-
 const transporter = nodeMailer.createTransport(
   sendgridTransport({
     auth: {
