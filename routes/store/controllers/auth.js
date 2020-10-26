@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const nodeMailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
+const { validationResult } = require('express-validator');
 
 const SEND_GRID_API = process.env.SEND_GRID_API;
 
@@ -25,39 +26,77 @@ exports.getLogin = (req, res) => {
     path: '/store/auth/login',
     pageTitle: 'Login',
     error: message,
+    oldInput: {
+      email: '',
+      password: '',
+    },
+    validationErrors: [],
   });
 };
 
-exports.postLogin = async (req, res) => {
+exports.postLogin = async (req, res, next) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
     const user = await User.findOne({ email: email });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render('pages/store/auth/login', {
+        path: '/store/auth/login',
+        pageTitle: 'Login',
+        error: errors.array()[0].msg,
+        oldInput: {
+          email: email,
+          password: password,
+        },
+        validationErrors: errors.array(),
+      });
+    }
     if (!user) {
-      req.flash('error', 'Invalid credentials');
-      return res.redirect('/store/auth/login');
+      return res.status(422).render('pages/store/auth/login', {
+        path: '/store/auth/login',
+        pageTitle: 'Login',
+        error: 'Invalid credentials',
+        oldInput: {
+          email: email,
+          password: password,
+        },
+        validationErrors: [],
+      });
     }
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword) {
-      req.flash('error', 'Invalid credentials');
-      return res.redirect('/store/auth/login');
+      return res.status(422).render('pages/store/auth/login', {
+        path: '/store/auth/login',
+        pageTitle: 'Login',
+        error: 'Invalid credentials',
+        oldInput: {
+          email: email,
+          password: password,
+        },
+        validationErrors: [],
+      });
     } else {
       req.session.isLoggedIn = true;
       req.session.user = user;
       await req.session.save();
       res.redirect('/store');
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
-exports.postLogout = async (req, res) => {
+exports.postLogout = async (req, res, next) => {
   try {
     await req.session.destroy();
     res.redirect('/store');
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -72,42 +111,44 @@ exports.getSignup = async (req, res) => {
     path: '/store/auth/signup',
     pageTitle: 'Signup',
     error: message,
+    oldInput: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationErrors: [],
   });
 };
 
-exports.postSignup = async (req, res) => {
+exports.postSignup = async (req, res, next) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
-    if (password != confirmPassword) {
-      req.flash('error', 'Passwords do not match');
-      return res.redirect('/store/auth/signup');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).render('pages/store/auth/signup', {
+        path: '/store/auth/signup',
+        pageTitle: 'Signup',
+        error: errors.array()[0].msg,
+        oldInput: { name: req.body.name, email: email, password: password, confirmPassword: req.body.confirmPassword },
+        validationErrors: errors.array(),
+      });
     }
-
     const hash = await bcrypt.hash(password, 10);
-
-    const user = await User.findOne({ email: email });
-
-    if (user) {
-      req.flash('error', 'This email address is already in use.');
-      return res.redirect('/store/auth/signup');
-    }
-
     const newUser = new User({ ...req.body, password: hash, level: 2 });
-
     await newUser.save();
-
     res.redirect('/store/auth/login');
-
     transporter.sendMail({
       to: email,
-      from: 'vladimirzhd.v@gmail.com',
+      from: 'zhd18001@byui.edu',
       subject: 'Welcome to the Shop',
       html: '<h1>Welcome, you successfully regestered an account!</h1>',
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -125,7 +166,7 @@ exports.getReset = (req, res) => {
   });
 };
 
-exports.postReset = async (req, res) => {
+exports.postReset = async (req, res, next) => {
   try {
     const buffer = await crypto.randomBytes(32);
     if (!buffer) {
@@ -145,15 +186,17 @@ exports.postReset = async (req, res) => {
     res.redirect('/store');
     transporter.sendMail({
       to: req.body.email,
-      from: 'vladimirzhd.v@gmail.com',
+      from: 'zhd18001@byui.edu',
       subject: 'Password Reset',
       html: `
         <p>You requested a password reset!</p>
         <p>Click this <a href='${req.protocol}://${req.headers.host}/store/auth/reset/${token}'>link</a> to set a new password.</p>
       `,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -178,8 +221,32 @@ exports.getNewPassword = async (req, res) => {
       pageTitle: 'New Password',
       error: message,
       userId: user._id.toString(),
+      passwordToken: token,
     });
   } catch (error) {
     console.error(error);
+  }
+};
+
+exports.postNewPassword = async (req, res, next) => {
+  try {
+    const newPassword = req.body.password;
+    const userId = req.body.userId;
+    const token = req.body.passwordToken;
+
+    const user = await User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() }, _id: userId });
+
+    if (user) {
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+      user.password = hashedPassword;
+      user.resetToken = undefined;
+      user.resetTokenExpiration = undefined;
+      user.save();
+    }
+    res.redirect('/store/auth/login');
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };

@@ -9,8 +9,10 @@ exports.getProducts = async (req, res, next) => {
       pageTitle: 'All Products',
       path: '/store/shop/products',
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -23,8 +25,10 @@ exports.getProduct = async (req, res, next) => {
       pageTitle: product.title,
       path: '/store/shop/products',
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -36,30 +40,32 @@ exports.getIndex = async (req, res, next) => {
       pageTitle: 'Shop',
       path: '/store/shop',
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
 exports.getCart = (req, res, next) => {
-  try {
-    req.user
-      .populate('cart.items.productId')
-      .execPopulate()
-      .then(user => {
-        const products = user.cart.items;
-        res.render('pages/store/shop/cart', {
-          path: '/store/shop/cart',
-          pageTitle: 'Your Cart',
-          products: products,
-          isAuthenticated: req.session.isLoggedIn,
-          csrfToken: req.csrfToken(),
-        });
-      })
-      .catch(err => console.log(err));
-  } catch (error) {
-    console.log(error);
-  }
+  req.user
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      const products = user.cart.items;
+      res.render('pages/store/shop/cart', {
+        path: '/store/shop/cart',
+        pageTitle: 'Your Cart',
+        products: products,
+        isAuthenticated: req.session.isLoggedIn,
+        csrfToken: req.csrfToken(),
+      });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postCart = async (req, res, next) => {
@@ -68,8 +74,10 @@ exports.postCart = async (req, res, next) => {
     const product = await Product.findById(prodId);
     req.user.addToCart(product);
     res.redirect('/store/shop/cart');
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -79,8 +87,10 @@ exports.postCartDeleteProduct = (req, res, next) => {
     req.user.removeFromCart(prodId).then(result => {
       res.redirect('/store/shop/cart');
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };
 
@@ -107,7 +117,11 @@ exports.postOrder = (req, res, next) => {
     .then(() => {
       res.redirect('/store/shop/orders');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.getOrders = async (req, res, next) => {
@@ -118,7 +132,9 @@ exports.getOrders = async (req, res, next) => {
       pageTitle: 'Your Orders',
       orders: orders,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
   }
 };

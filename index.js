@@ -50,7 +50,7 @@ app
       next();
     } catch (error) {
       console.log(error);
-      next();
+      next(new Error(error));
     }
   })
   .use((req, res, next) => {
