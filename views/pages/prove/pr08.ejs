@@ -1,0 +1,35 @@
+<% include ./includes/header-b4.ejs %> 
+  </head>
+  <body>
+    <% include ./includes/nav.ejs %> 
+    <div class="container">
+      <div class="row">
+        <% data.forEach(item => { %>
+          <div class='card m-1' style="width: 14rem;">
+            <div class="card-body">
+              <p class="card-text">Name: <%= item.name %></p>
+              <p class="card-text">Year: <%= item.year %></p>
+              <p class="card-text">Major: <%= item.major %></p>
+              <p class="card-text">Emphasis: <%= item.emphasis %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="btn-group">
+        <form action="/prove/pr08/prev" method="GET">
+          <button type="submit" <% if (prevDisable) { %>
+           disabled
+          <% } %> class="btn btn-primary">Previous</button>
+        </form>
+        <% for( let i = 0; i <= pages - 1; i++ ) { %>
+          <a class="btn btn-primary ml-1" href="/prove/pr08/<%= i %> "><%= i + 1 %> </a>
+        <% } %>
+        <form action="/prove/pr08/next" method="GET">
+          <button type="submit" <% if (nextDisable) { %>
+           disabled
+          <% } %> class="btn btn-primary ml-1">Next</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
