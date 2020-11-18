@@ -5,6 +5,7 @@ routes
   .use('/pr02', require('./routes/pr02'))
   .use('/pr08', require('./routes/pr08'))
   .use('/pr09', require('./routes/pr09'))
+  .use('/pr10', require('./routes/pr10'))
   .get('/', (req, res) => {
     res.render('pages/prove', {
       title: 'Prove Assignments',

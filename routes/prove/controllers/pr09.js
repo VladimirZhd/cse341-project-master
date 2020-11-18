@@ -15,6 +15,7 @@ const convertToJson = res => {
 exports.getProve = async (req, res) => {
   try {
     const data = await fetch(url).then(convertToJson);
+    console.log(data);
     if (data.previous) {
       prevApi = data.previous;
     } else {
@@ -40,6 +41,7 @@ exports.getProve = async (req, res) => {
 exports.getNext = async (req, res) => {
   try {
     const data = await fetch(nextApi).then(convertToJson);
+    console.log(data);
     if (data.previous) {
       prevApi = data.previous;
     } else {
