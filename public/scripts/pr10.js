@@ -11,6 +11,8 @@ const fetchAll = async e => {
   list.innerHTML = data.avengers.map(item => `<li>${item.name}</li>`).join('');
 };
 
+window.addEventListener('load', fetchAll);
+
 const addItem = async e => {
   const text = document.getElementById('text');
   await fetch('/prove/pr10/insert', {
@@ -21,9 +23,6 @@ const addItem = async e => {
   fetchAll();
   text.value = '';
 };
-
-const fetchButton = document.getElementById('fetchButton');
-fetchButton.addEventListener('click', fetchAll);
 
 const addButton = document.getElementById('addButton');
 addButton.addEventListener('click', addItem);
