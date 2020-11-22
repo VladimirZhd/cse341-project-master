@@ -6,9 +6,24 @@ const convertToJson = res => {
   }
 };
 const fetchAll = async e => {
-  const data = await fetch('http://localhost:5000/pr10/fetchAll').then(convertToJson);
-  console.log(data);
+  const data = await fetch('http://localhost:5000/prove/pr10/fetchAll').then(convertToJson);
+  const list = document.getElementById('listElement');
+  list.innerHTML = data.avengers.map(item => `<li>${item.name}</li>`).join('');
+};
+
+const addItem = async e => {
+  const text = document.getElementById('text');
+  await fetch('http://localhost:5000/prove/pr10/insert', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: text.value }),
+  });
+  fetchAll();
+  text.value = '';
 };
 
 const fetchButton = document.getElementById('fetchButton');
 fetchButton.addEventListener('click', fetchAll);
+
+const addButton = document.getElementById('addButton');
+addButton.addEventListener('click', addItem);

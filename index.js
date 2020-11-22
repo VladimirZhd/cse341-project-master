@@ -35,10 +35,16 @@ app
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
+  .use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    next();
+  })
   .use(bodyParser.urlencoded({ extended: false }))
   .use(bodyParser.json()) // For parsing the body of a POST
   .use(session({ secret: 'njahsdvevuaskdkhfg', resave: false, saveUninitialized: false, store: store }))
-  .use(csrfProtection)
+  // .use(csrfProtection)
   .use(flash())
   .use(async (req, res, next) => {
     try {
@@ -55,7 +61,7 @@ app
   })
   .use((req, res, next) => {
     res.locals.isAuthenticated = req.session.isLoggedIn;
-    res.locals.csrfToken = req.csrfToken();
+    // res.locals.csrfToken = req.csrfToken();
     if (!req.session.user) {
       res.locals.level = 2;
       return next();
