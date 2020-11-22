@@ -26,7 +26,7 @@ const csrfProtection = csrf();
 
 const app = express();
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 // Route setup. You can implement more in the future!
 const routes = require('./routes');
