@@ -75,7 +75,15 @@ app
 mongoose
   .connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .then(result => {
-    app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+    const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+    const io = require('socket.io')(server);
+    io.on('connection', socket => {
+      console.log('a user Connected');
+      socket.on('new name', (msg) => {
+        console.log('message: ' + msg);
+        io.emit('new name', msg);
+      })
+    })
   })
   .catch(err => {
     console.log(err);

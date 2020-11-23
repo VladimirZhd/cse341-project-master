@@ -1,3 +1,4 @@
+const socket = io();
 const convertToJson = res => {
   if (res.ok) {
     return res.json();
@@ -15,6 +16,7 @@ window.addEventListener('load', fetchAll);
 
 const addItem = async e => {
   const text = document.getElementById('text');
+  socket.emit('new name', text.value);
   await fetch('/prove/pr10/insert', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -23,6 +25,10 @@ const addItem = async e => {
   fetchAll();
   text.value = '';
 };
+
+socket.on('new name', () => {
+  fetchAll();
+})
 
 const addButton = document.getElementById('addButton');
 addButton.addEventListener('click', addItem);

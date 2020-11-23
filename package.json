@@ -30,7 +30,9 @@
     "nodemailer-sendgrid-transport": "^0.2.0",
     "path": "^0.12.7",
     "pug": "^2.0.4",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "socket.io": "^3.0.3",
+    "socket.io-client": "^3.0.3"
   },
   "devDependencies": {
     "request": "^2.81.0",
