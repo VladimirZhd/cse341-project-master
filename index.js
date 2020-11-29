@@ -79,11 +79,10 @@ mongoose
     const io = require('socket.io')(server);
     io.on('connection', socket => {
       console.log('a user Connected');
-      socket.on('new name', (msg) => {
-        console.log('message: ' + msg);
+      socket.on('new name', msg => {
         io.emit('new name', msg);
-      })
-    })
+      });
+    });
   })
   .catch(err => {
     console.log(err);
